@@ -1,12 +1,10 @@
-FROM theiaide/theia:1.14.0 AS theia
-
 FROM ubuntu:focal
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update \
  && apt-get install -yq \
-      sudo zsh net-tools jq htop gpg curl xz-utils git build-essential vim \
+      sudo zsh net-tools jq htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
@@ -77,8 +75,6 @@ RUN set -ex \
 
 # END Node
 
-
-
 ARG user=theia
 ARG group=theia
 
@@ -88,9 +84,26 @@ RUN adduser --disabled-password --gecos '' ${user} \
 
 USER ${user}
 
-COPY --from=theia --chown=${user}:${group} /home/theia /home/${user}
-
 WORKDIR /home/${user}
+
+ADD package.json ./package.json
+
+RUN if [ "$strip" = "true" ]; then \
+yarn --pure-lockfile && \
+    NODE_OPTIONS="--max_old_space_size=4096" yarn theia build && \
+    yarn theia download:plugins && \
+    yarn --production && \
+    yarn autoclean --init && \
+    echo *.ts >> .yarnclean && \
+    echo *.ts.map >> .yarnclean && \
+    echo *.spec.* >> .yarnclean && \
+    yarn autoclean --force && \
+    yarn cache clean \
+;else \
+yarn --cache-folder ./ycache && rm -rf ./ycache && \
+     NODE_OPTIONS="--max_old_space_size=4096" yarn theia build && yarn theia download:plugins \
+;fi
+
 
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k \
