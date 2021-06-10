@@ -1,10 +1,11 @@
-FROM ubuntu:focal
+FROM ubuntu:groovy
 
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update \
+RUN yes | unminimize \
+ && apt-get update \
  && apt-get install -yq \
-      sudo zsh net-tools jq htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm \
+      sudo zsh net-tools jq htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm runc podman \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
@@ -86,23 +87,19 @@ USER ${user}
 
 WORKDIR /home/${user}
 
-ADD package.json ./package.json
+COPY --chown=${user}:${group} package.json ./.theiaide/package.json
 
-RUN if [ "$strip" = "true" ]; then \
-yarn --pure-lockfile && \
-    NODE_OPTIONS="--max_old_space_size=4096" yarn theia build && \
-    yarn theia download:plugins && \
-    yarn --production && \
-    yarn autoclean --init && \
-    echo *.ts >> .yarnclean && \
-    echo *.ts.map >> .yarnclean && \
-    echo *.spec.* >> .yarnclean && \
-    yarn autoclean --force && \
-    yarn cache clean \
-;else \
-yarn --cache-folder ./ycache && rm -rf ./ycache && \
-     NODE_OPTIONS="--max_old_space_size=4096" yarn theia build && yarn theia download:plugins \
-;fi
+RUN cd /home/${user}/.theiaide \
+ && yarn --pure-lockfile \
+ && NODE_OPTIONS="--max_old_space_size=4096" yarn theia build \
+ && yarn theia download:plugins \
+ && yarn --production \
+ && yarn autoclean --init \
+ && echo *.ts >> .yarnclean \
+ && echo *.ts.map >> .yarnclean \
+ && echo *.spec.* >> .yarnclean \
+ && yarn autoclean --force \
+ && yarn cache clean
 
 
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
@@ -111,9 +108,7 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/i
  && $HOME/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus/install \
  && sed -i 's|^ZSH_THEME=.*$|ZSH_THEME="powerlevel10k/powerlevel10k"|' $HOME/.zshrc \
  && printf '\n\n[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh\n\n' >> $HOME/.zshrc \
- && printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then exec zsh ; fi\n\n' >> $HOME/.bashrc
-
-ENV SHELL=/usr/bin/zsh
+ && printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then echo "Oops, bash is here" && exec zsh ; fi\n\n' >> $HOME/.bashrc
 
 COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
 COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
@@ -121,7 +116,8 @@ COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
 EXPOSE 3000
 
 ENV HOME=/home/${user} \
+    SHELL=/usr/bin/zsh \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8
 
-ENTRYPOINT [ "node", "./src-gen/backend/main.js", ".", "--hostname=0.0.0.0" ]
+ENTRYPOINT [ "/usr/bin/zsh", "-c", "node $HOME/.theiaide/src-gen/backend/main.js $HOME --app-project-path=$HOME/.theiaide --hostname=0.0.0.0" ]
