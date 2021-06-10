@@ -116,7 +116,7 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/i
  && printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then echo "Oops, bash is here" && exec zsh ; fi\n\n' >> $HOME/.bashrc
 
 COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
-COPY --chown=${user}:${group} dot-p10k.zsh /home/${user}/.p10k.zsh
+COPY --chown=${user}:${group} dot-zshrc.d/ /home/${user}/.zshrc.d/
 
 EXPOSE 3000
 
