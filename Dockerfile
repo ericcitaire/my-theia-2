@@ -6,10 +6,11 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       sudo zsh net-tools jq htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm runc podman \
+      python openjdk-8-jdk maven \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
-# https://github.com/nodejs/docker-node/blob/main/12/buster/Dockerfile
+# https://github.com/nodejs/docker-node/blob/4e8a6d0f08491ebf91b542e49206edea81fb3541/12/buster/Dockerfile
 
 ENV NODE_VERSION 12.22.1
 
@@ -89,6 +90,9 @@ WORKDIR /home/${user}
 
 COPY --chown=${user}:${group} package.json ./.theiaide/package.json
 
+# START Theia
+# https://github.com/theia-ide/theia-apps/blob/d329db260cc8e96759241198153d9d3fd731f32e/theia-full-docker/Dockerfile#L109-L123
+
 RUN cd /home/${user}/.theiaide \
  && yarn --pure-lockfile \
  && NODE_OPTIONS="--max_old_space_size=4096" yarn theia build \
@@ -101,6 +105,7 @@ RUN cd /home/${user}/.theiaide \
  && yarn autoclean --force \
  && yarn cache clean
 
+# END Theia
 
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k \
