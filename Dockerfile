@@ -6,7 +6,8 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       sudo zsh net-tools jq htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm runc podman \
-      python python-pip-whl python3-pip python3-venv openjdk-8-jdk maven \
+      python python-pip-whl python3-pip python3-venv libxml2-dev libxslt1-dev \
+      openjdk-8-jdk maven \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
