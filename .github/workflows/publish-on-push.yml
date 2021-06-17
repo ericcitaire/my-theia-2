@@ -11,9 +11,6 @@ jobs:
       packages: write
       contents: read
     steps:
-      - name: Get the version
-        id: git
-        run: echo "::set-output name=tag::${GITHUB_REF#refs/tags/}"
       - name: Check out the repo
         uses: actions/checkout@v2
       - name: Log in to Docker Hub
@@ -32,10 +29,10 @@ jobs:
         with:
           push: true
           tags: |
-            ericcitaire/my-theia-2:${{ steps.git.outputs.tag }}
+            ericcitaire/my-theia-2:latest
       - name: Build container image
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: |
-            docker.pkg.github.com/${{ github.repository }}/my-theia-2:${{ steps.git.outputs.tag }}
+            docker.pkg.github.com/${{ github.repository }}/my-theia-2:latest
