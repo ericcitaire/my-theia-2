@@ -91,12 +91,12 @@ USER ${user}
 
 WORKDIR /home/${user}
 
-COPY --chown=${user}:${group} package.json ./.theiaide/package.json
+COPY --chown=${user}:${group} package.json /opt/theia/package.json
 
 # START Theia
 # https://github.com/theia-ide/theia-apps/blob/d329db260cc8e96759241198153d9d3fd731f32e/theia-full-docker/Dockerfile#L109-L123
 
-RUN cd /home/${user}/.theiaide \
+RUN cd /opt/theia \
  && yarn --pure-lockfile \
  && NODE_OPTIONS="--max_old_space_size=4096" yarn theia build \
  && yarn theia download:plugins \
@@ -128,4 +128,4 @@ ENV HOME=/home/${user} \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8
 
-ENTRYPOINT [ "/usr/bin/zsh", "-c", "node $HOME/.theiaide/src-gen/backend/main.js $HOME --app-project-path=$HOME/.theiaide --hostname=0.0.0.0" ]
+ENTRYPOINT [ "/usr/bin/zsh", "-c", "node /opt/theia/src-gen/backend/main.js $HOME --app-project-path=/opt/theia --plugins=local-dir:/opt/theia/plugins --hostname=0.0.0.0" ]
