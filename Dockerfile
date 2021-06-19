@@ -88,11 +88,7 @@ RUN adduser --disabled-password --gecos '' ${user} \
  && adduser ${user} sudo \
  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-USER ${user}
-
-WORKDIR /home/${user}
-
-COPY --chown=${user}:${group} package.json /opt/theia/package.json
+COPY package.json /opt/theia/package.json
 
 # START Theia
 # https://github.com/theia-ide/theia-apps/blob/d329db260cc8e96759241198153d9d3fd731f32e/theia-full-docker/Dockerfile#L109-L123
@@ -110,6 +106,10 @@ RUN cd /opt/theia \
  && yarn cache clean
 
 # END Theia
+
+USER ${user}
+
+WORKDIR /home/${user}
 
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k \
