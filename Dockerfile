@@ -127,6 +127,7 @@ EXPOSE 3000
 ENV HOME=/home/${user} \
     SHELL=/usr/bin/zsh \
     LC_ALL=C.UTF-8 \
-    LANG=C.UTF-8
+    LANG=C.UTF-8 \
+    PATH=${HOME}/.local/bin:${PATH}
 
 ENTRYPOINT [ "/usr/bin/zsh", "-c", "node /opt/theia/src-gen/backend/main.js $HOME --app-project-path=/opt/theia --plugins=local-dir:/opt/theia/plugins --hostname=0.0.0.0" ]
