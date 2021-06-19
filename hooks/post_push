@@ -1,6 +1,0 @@
-#!/bin/bash
-
-TIMESTAMP=$(date +"%Y%m%d")
-
-docker tag $IMAGE_NAME $DOCKER_REPO:$TIMESTAMP
-docker push $DOCKER_REPO:$TIMESTAMP
