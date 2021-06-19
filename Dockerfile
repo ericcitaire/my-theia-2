@@ -7,7 +7,8 @@ RUN yes | unminimize \
  && apt-get install -yq \
       man-db manpages manpages-posix \
       sudo zsh net-tools htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm runc podman \
-      python python-pip-whl python3-pip python3-venv libxml2-dev libxslt1-dev \
+      python python-pip-whl python3-pip python3-venv libxml2-dev libxslt1-dev pipenv \
+      python3-autopep8 python3-flake8 python3-pycodestyle black flake8 pycodestyle pylint \
       openjdk-8-jdk maven \
       jq xmlstarlet \
  && rm -rf /var/lib/apt/lists/*
