@@ -88,10 +88,15 @@ RUN adduser --disabled-password --gecos '' ${user} \
  && adduser ${user} sudo \
  && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-COPY package.json /opt/theia/package.json
+USER ${user}
+ENV HOME=/home/${user}
+
+WORKDIR /home/${user}
 
 # START Theia
 # https://github.com/theia-ide/theia-apps/blob/d329db260cc8e96759241198153d9d3fd731f32e/theia-full-docker/Dockerfile#L109-L123
+
+COPY --chown=${user}:${group} package.json /opt/theia/package.json
 
 RUN cd /opt/theia \
  && yarn --pure-lockfile \
@@ -107,10 +112,6 @@ RUN cd /opt/theia \
 
 # END Theia
 
-USER ${user}
-
-WORKDIR /home/${user}
-
 RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh" | sh - \
  && git clone --depth=1 https://github.com/romkatv/powerlevel10k.git $HOME/.oh-my-zsh/custom/themes/powerlevel10k \
  && true \
@@ -119,13 +120,12 @@ RUN curl -fsSL "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/i
  && printf '\n\n[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh\n\n' >> $HOME/.zshrc \
  && printf '\n\n# Force ZSH\nif [ "$SHLVL" -eq 1 ] ; then echo "Oops, bash is here" && exec zsh ; fi\n\n' >> $HOME/.bashrc
 
-COPY --chown=${user}:${group} dot-zshrc /home/${user}/.zshrc
-COPY --chown=${user}:${group} dot-zshrc.d/ /home/${user}/.zshrc.d/
+COPY --chown=${user}:${group} dot-zshrc ${HOME}/.zshrc
+COPY --chown=${user}:${group} dot-zshrc.d/ ${HOME}/.zshrc.d/
 
 EXPOSE 3000
 
-ENV HOME=/home/${user} \
-    SHELL=/usr/bin/zsh \
+ENV SHELL=/usr/bin/zsh \
     LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \
     PATH=${HOME}/.local/bin:${PATH}
