@@ -6,9 +6,9 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       man-db manpages manpages-posix \
-      sudo zsh net-tools htop gpg curl xz-utils git build-essential libc6 vim gcc gdb llvm runc podman \
-      python python-pip-whl python3-pip python3-venv libxml2-dev libxslt1-dev pipenv \
-      python3-autopep8 python3-flake8 python3-pycodestyle black flake8 pycodestyle pylint \
+      sudo zsh net-tools htop gpg wget curl xz-utils git build-essential libc6 vim make gcc gdb llvm runc podman \
+      python3-pip libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev zlib1g-dev \
+      libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
       openjdk-8-jdk maven \
       jq xmlstarlet \
  && rm -rf /var/lib/apt/lists/*
@@ -92,6 +92,24 @@ USER ${user}
 ENV HOME=/home/${user}
 
 WORKDIR /home/${user}
+
+# START Python
+# https://github.com/gitpod-io/workspace-images/blob/abd6818f4a9db3b2e7c7d17d4af5fdba17b0ccb4/full/Dockerfile#L155-L173
+
+ENV PATH=$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH
+RUN curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash \
+    && pyenv update \
+    && pyenv install 2.7.18 \
+    && pyenv install 3.8.10 \
+    && pyenv global 2.7.18 3.8.10 \
+    && python3 -m pip install --no-cache-dir --upgrade pip \
+    && python3 -m pip install --no-cache-dir --upgrade \
+        setuptools wheel virtualenv pipenv pylint rope flake8 \
+        mypy autopep8 pep8 pylama pydocstyle bandit notebook \
+        twine \
+    && sudo rm -rf /tmp/*
+
+# END Python
 
 # START Theia
 # https://github.com/theia-ide/theia-apps/blob/d329db260cc8e96759241198153d9d3fd731f32e/theia-full-docker/Dockerfile#L109-L123
