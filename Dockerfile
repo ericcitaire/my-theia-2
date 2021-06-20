@@ -86,12 +86,12 @@ ARG group=theia
 
 RUN adduser --disabled-password --gecos '' ${user} \
  && adduser ${user} sudo \
- && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+ && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+ && mkdir -p /workspace \
+ && chown -R ${user}:${group} /workspace
 
 USER ${user}
 ENV HOME=/home/${user}
-
-WORKDIR /home/${user}
 
 # START Python
 # https://github.com/gitpod-io/workspace-images/blob/abd6818f4a9db3b2e7c7d17d4af5fdba17b0ccb4/full/Dockerfile#L155-L173
@@ -108,6 +108,8 @@ RUN curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-ins
         mypy autopep8 pep8 pylama pydocstyle bandit notebook \
         twine \
     && sudo rm -rf /tmp/*
+ENV PYTHONUSERBASE=/workspace/.pip-modules \
+    PIP_USER=yes
 
 # END Python
 
@@ -148,4 +150,7 @@ ENV SHELL=/usr/bin/zsh \
     LANG=C.UTF-8 \
     PATH=${HOME}/.local/bin:${PATH}
 
-ENTRYPOINT [ "/usr/bin/zsh", "-c", "node /opt/theia/src-gen/backend/main.js $HOME --app-project-path=/opt/theia --plugins=local-dir:/opt/theia/plugins --hostname=0.0.0.0" ]
+VOLUME /workspace
+WORKDIR /workspace
+
+ENTRYPOINT [ "/usr/bin/zsh", "-c", "node /opt/theia/src-gen/backend/main.js /workspace --app-project-path=/opt/theia --plugins=local-dir:/opt/theia/plugins --hostname=0.0.0.0" ]
