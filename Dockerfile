@@ -6,7 +6,7 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       man-db manpages manpages-posix \
-      sudo zsh net-tools htop gpg wget curl xz-utils git build-essential libc6 vim make gcc gdb llvm runc podman \
+      sudo zsh net-tools iputils-ping netcat strace htop gpg wget curl xz-utils git build-essential libc6 vim make gcc gdb llvm runc podman \
       python3-pip libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev zlib1g-dev \
       libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
       openjdk-8-jdk maven \
