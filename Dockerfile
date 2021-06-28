@@ -6,9 +6,11 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       man-db manpages manpages-posix \
-      sudo zsh net-tools iputils-ping netcat strace htop gpg wget curl xz-utils git build-essential libc6 vim make gcc gdb llvm runc podman \
-      python3-pip libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev zlib1g-dev \
-      libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
+      sudo zsh net-tools iputils-ping netcat strace htop gpg wget curl xz-utils \
+      git build-essential libc6 vim make gcc gdb llvm runc podman \
+      python3-pip python3-venv python3-pbr pipenv \
+      libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev \
+      zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
       openjdk-8-jdk maven \
       jq xmlstarlet \
  && rm -rf /var/lib/apt/lists/*
@@ -92,24 +94,11 @@ ENV HOME=/home/${user}
 # START Python
 # https://github.com/gitpod-io/workspace-images/blob/abd6818f4a9db3b2e7c7d17d4af5fdba17b0ccb4/full/Dockerfile#L155-L173
 
-ENV PATH=$HOME/.pyenv/bin:$HOME/.pyenv/shims:$PATH
-RUN curl -fsSL https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash \
-    && pyenv update \
-    && pyenv install 2.7.18 \
-    && pyenv install 3.8.10 \
-    && pyenv global 2.7.18 3.8.10 \
-    && python3 -m pip install --no-cache-dir --upgrade pip \
-    && python3 -m pip install --no-cache-dir --upgrade \
-        setuptools wheel virtualenv pipenv pylint rope flake8 \
-        mypy autopep8 pep8 pylama pydocstyle bandit notebook \
-        twine \
-    && python2 -m pip install --no-cache-dir --upgrade pip \
-    && python2 -m pip install --no-cache-dir --upgrade \
-        setuptools wheel virtualenv pipenv pylint rope flake8 \
-        autopep8 pep8 pylama pydocstyle twine \
-    && sudo rm -rf /tmp/*
-ENV PYTHONUSERBASE=/workspace/.pip-modules \
-    PIP_USER=yes
+RUN python3 -m pip install --user --no-cache-dir --upgrade pip \
+ && python3 -m pip install --user --no-cache-dir --upgrade \
+               setuptools wheel virtualenv pipenv pylint rope flake8 \
+               mypy autopep8 pep8 pylama pydocstyle bandit notebook \
+               twine black yapf
 
 # END Python
 
