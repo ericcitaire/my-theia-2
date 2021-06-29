@@ -11,7 +11,7 @@ RUN yes | unminimize \
       python3-pip python3-venv python3-pbr pipenv \
       libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev \
       zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
-      openjdk-8-jdk maven groovy \
+      openjdk-8-jdk openjdk-11-jdk maven groovy \
       jq xmlstarlet \
  && rm -rf /var/lib/apt/lists/*
 
