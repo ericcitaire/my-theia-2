@@ -139,7 +139,6 @@
         "yangster": "https://open-vsx.org/api/typefox/yang-vscode/2.0.3/file/typefox.yang-vscode-2.0.3.vsix",
         "vscjava.vscode-maven": "https://open-vsx.org/api/vscjava/vscode-maven/0.21.2/file/vscjava.vscode-maven-0.21.2.vsix",
         "redhat.java": "https://open-vsx.org/api/redhat/java/0.78.0/file/redhat.java-0.78.0.vsix",
-        "vscoss.vscode-ansible": "https://open-vsx.org/api/vscoss/vscode-ansible/0.5.2/file/vscoss.vscode-ansible-0.5.2.vsix",
         "redhat.vscode-yaml": "https://open-vsx.org/api/redhat/vscode-yaml/0.17.0/file/redhat.vscode-yaml-0.17.0.vsix"
     }
 }
