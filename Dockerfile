@@ -12,7 +12,7 @@ RUN yes | unminimize \
       libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev \
       zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
       openjdk-8-jdk openjdk-11-jdk maven groovy \
-      jq xmlstarlet zip unzip fdupes \
+      jq xmlstarlet libxml2-utils zip unzip fdupes \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
