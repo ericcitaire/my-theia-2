@@ -13,6 +13,7 @@ RUN yes | unminimize \
       zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev libncurses5-dev tk-dev \
       openjdk-8-jdk openjdk-11-jdk maven groovy \
       jq xmlstarlet libxml2-utils zip unzip fdupes \
+      libsecret-1-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # START Node
