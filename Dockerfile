@@ -1,4 +1,4 @@
-FROM ubuntu:groovy
+FROM ubuntu:rolling
 
 ENV DEBIAN_FRONTEND noninteractive
 
