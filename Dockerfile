@@ -6,7 +6,7 @@ RUN yes | unminimize \
  && apt-get update \
  && apt-get install -yq \
       man-db manpages manpages-posix \
-      sudo zsh net-tools iputils-ping netcat strace htop gpg wget curl xz-utils \
+      sudo zsh net-tools iputils-ping netcat-traditional strace htop gpg wget curl xz-utils \
       git build-essential libc6 vim make gcc gdb llvm runc podman \
       python3-pip python3-venv python3-pbr pipenv \
       libxml2-dev libxslt1-dev libxmlsec1-dev libffi-dev liblzma-dev libssl-dev \
